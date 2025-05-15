@@ -1,0 +1,30 @@
+db.Catalog.insertMany([
+  { _id: 1, name: "Red Chair", description: "A comfortable red chair for your living room" },
+  { _id: 2, name: "Blue Sofa", description: "A spacious blue sofa for relaxing" },
+  { _id: 3, name: "Wooden Table", description: "A sturdy wooden table perfect for dining" },
+  { _id: 4, name: "Office Desk", description: "Ideal desk for office or study use" },
+  { _id: 5, name: "Gaming Chair", description: "Ergonomic chair designed for gamers" }
+])
+
+
+db.Catalog.createIndex({ name: "text", description: "text" })
+
+db.Catalog.aggregate([
+  {
+    $match: {
+      $text: { $search: "chair" }
+    }
+  },
+  {
+    $project: {
+      name: 1,
+      description: 1,
+      score: { $meta: "textScore" }
+    }
+  },
+  {
+    $sort: {
+      score: -1
+    }
+  }
+])
